@@ -170,7 +170,7 @@
 						<form id="uploadForm">
 							<input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" required>
 							<input type="text"class="form-control" id="last_name" name="last_name" placeholder="Last Name" required>
-							<input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="Phone Number" required>
+							<input type="number" class="form-control" id="phone_number" name="phone_number" placeholder="Phone Number" required>
 							<input type="file" class="form-control" id="file" name="file" accept="image/*" required>
 							<button type="submit" class="btn btn-default btn-block "class="form-control">Upload A Photo</button>
 						</form>
@@ -344,7 +344,7 @@
 						<div class="col-md-3 col-sm-3">
 							<div class="form-group">
 								<label for="phone_number" class="sr-only">Phone Number</label>
-								<input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="Phone Number">
+								<input type="number" class="form-control" id="phone_number" name="phone_number" placeholder="Phone Number">
 							</div>
 						</div>
 						<div class="col-md-3 col-sm-3">
@@ -386,7 +386,7 @@
 							<div class="col-md-12">
 								<div class="form-group">
 									<label for="phone_number" class="sr-only">Phone Number</label>
-									<input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Phone Number">
+									<input type="number" class="form-control" id="phone_number" name="phone_number" placeholder="Phone Number">
 								</div>
 							</div>
 							<button class="btn" id="startQuizBtn">Start Quiz</button>
@@ -632,46 +632,54 @@ phoneNumberInput.addEventListener("input", checkFields);
             document.getElementById("question").textContent = "Failed to load question!";
         }
     }
-
-    function displayQuestion() {
-        if (currentQuestionIndex >= questions.length) {
-            document.getElementById("question").textContent = "Quiz completed!";
-            document.getElementById("options-list").innerHTML = "";
-            document.getElementById("nextBtn").style.display = "none";
-            document.getElementById("submitBtn").style.display = "block"; // Show submit button
-            return;
-        }
-
-        let questionData = questions[currentQuestionIndex];
-        document.querySelector(".question").textContent = questionData.question;
-        const optionsList = document.getElementById("options-list");
-        optionsList.innerHTML = "";
-
-        questionData.options.forEach((option) => {
-            const li = document.createElement("li");
-            li.textContent = option;
-            li.classList.add("option-item");
-            li.onclick = () => selectAnswer(option);
-            optionsList.appendChild(li);
-        });
-
-        selectedAnswer = null;
+	function displayQuestion() {
+    if (currentQuestionIndex >= questions.length) {
+        document.getElementById("question").textContent = "Quiz completed!";
+        document.getElementById("options-list").innerHTML = "";
         document.getElementById("nextBtn").style.display = "none";
-        document.getElementById("submitBtn").style.display = "none";
+        document.getElementById("submitBtn").style.display = "block"; // Show submit button
+        return;
     }
 
-    function selectAnswer(answer) {
-        selectedAnswer = answer;
-        document.getElementById("nextBtn").style.display = "block"; // Show Next button
+    let questionData = questions[currentQuestionIndex];
+    document.querySelector(".question").textContent = questionData.question;
+    const optionsList = document.getElementById("options-list");
+    optionsList.innerHTML = "";
 
-        document.querySelectorAll(".option-item").forEach((li) => {
+    // **Create a mapping of options with keys (option_a, option_b, etc.)**
+    const optionKeys = ["option_a", "option_b", "option_c", "option_d"];
+    questionData.options.forEach((option, index) => {
+        const li = document.createElement("li");
+        li.textContent = option;
+        li.classList.add("option-item");
+
+        // **Pass the option key (e.g., "option_a") instead of text**
+        li.onclick = () => selectAnswer(optionKeys[index]);
+
+        optionsList.appendChild(li);
+    });
+
+    selectedAnswer = null;
+    document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("submitBtn").style.display = "none";
+}
+
+
+function selectAnswer(answerKey) {
+    selectedAnswer = answerKey; // Store option key (e.g., "option_a")
+
+    document.getElementById("nextBtn").style.display = "block"; // Show Next button
+
+    // **Highlight selected answer**
+      document.querySelectorAll(".option-item").forEach((li) => {
             li.style.background = li.textContent === answer ? "#007bff" : "#e9ecef";
             li.style.color = li.textContent === answer ? "white" : "black";
         });
-    }
-
+}
     function nextQuestion() {
         if (!selectedAnswer) return;
+		console.log(selectAnswer,'anssssssssssssss');
+		
 
         // Store answer
         answers[questions[currentQuestionIndex].id] = selectedAnswer;
@@ -719,6 +727,9 @@ if (!firstName || !lastName || !phoneNumber) {
             phone_number: phoneNumber,
             answers: answers
         };
+
+		console.log(answers,'addddddddddddddddd');
+		
 
         try {
             const response = await fetch(submitUrl, {
