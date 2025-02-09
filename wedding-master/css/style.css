@@ -1022,6 +1022,12 @@ form label {
   }
 }
 
+#startQuizBtn{
+  display: flex;
+  justify-content: center;
+  margin-left: 20px;
+}
+
 .fh5co-section-gray {
   background: rgba(0, 0, 0, 0.04);
 }
@@ -1815,7 +1821,8 @@ form label {
   background: transparent;
   border: 2px solid rgba(0, 0, 0, 0.1);
   height: 54px;
-  font-size: 18px;
+  padding: 20px;
+  font-size: 15px;
   font-weight: 300;
 }
 .form-control:active, .form-control:focus {
